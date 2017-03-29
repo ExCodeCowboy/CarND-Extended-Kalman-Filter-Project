@@ -18,12 +18,22 @@ public:
   Eigen::MatrixXd Q_;
 
   // measurement matrix
-  Eigen::MatrixXd H_;
+  Eigen::MatrixXd H_laser_;
+
+  // measurement matrix
+  Eigen::MatrixXd Hj_radar_;
 
   // measurement covariance matrix
-  Eigen::MatrixXd R_;
+  Eigen::MatrixXd R_laser_;
 
-  /**
+  // measurement covariance matrix
+  Eigen::MatrixXd R_radar_;
+
+  // state identity matrix
+  Eigen::MatrixXd I_;
+
+
+    /**
    * Constructor
    */
   KalmanFilter();
@@ -32,18 +42,6 @@ public:
    * Destructor
    */
   virtual ~KalmanFilter();
-
-  /**
-   * Init Initializes Kalman filter
-   * @param x_in Initial state
-   * @param P_in Initial state covariance
-   * @param F_in Transition matrix
-   * @param H_in Measurement matrix
-   * @param R_in Measurement covariance matrix
-   * @param Q_in Process covariance matrix
-   */
-  void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
 
   /**
    * Prediction Predicts the state and the state covariance
@@ -64,6 +62,11 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+  /**
+   * Calculate the current state in polar coordinates
+   * @return Hx The current state in polar coordinates
+   */
+  Eigen::VectorXd GetPolarState() const;
 };
 
 #endif /* KALMAN_FILTER_H_ */
