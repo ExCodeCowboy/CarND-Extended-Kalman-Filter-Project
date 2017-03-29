@@ -2,15 +2,13 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <stdlib.h>
 #include "Eigen/Dense"
 #include "FusionEKF.h"
 #include "ground_truth_package.h"
-#include "measurement_package.h"
 
 using namespace std;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 using std::vector;
 
 void check_arguments(int argc, char* argv[]) {
@@ -83,7 +81,7 @@ int main(int argc, char* argv[]) {
 
       // read measurements at this timestamp
       meas_package.sensor_type_ = MeasurementPackage::LASER;
-      meas_package.raw_measurements_ = VectorXd(2);
+      meas_package.raw_measurements_ = VectorXf(2);
       float x;
       float y;
       iss >> x;
@@ -97,7 +95,7 @@ int main(int argc, char* argv[]) {
 
       // read measurements at this timestamp
       meas_package.sensor_type_ = MeasurementPackage::RADAR;
-      meas_package.raw_measurements_ = VectorXd(3);
+      meas_package.raw_measurements_ = VectorXf(3);
       float ro;
       float phi;
       float ro_dot;
@@ -119,7 +117,7 @@ int main(int argc, char* argv[]) {
     iss >> y_gt;
     iss >> vx_gt;
     iss >> vy_gt;
-    gt_package.gt_values_ = VectorXd(4);
+    gt_package.gt_values_ = VectorXf(4);
     gt_package.gt_values_ << x_gt, y_gt, vx_gt, vy_gt;
     gt_pack_list.push_back(gt_package);
   }
@@ -128,8 +126,8 @@ int main(int argc, char* argv[]) {
   FusionEKF fusionEKF;
 
   // used to compute the RMSE later
-  vector<VectorXd> estimations;
-  vector<VectorXd> ground_truth;
+  vector<VectorXf> estimations;
+  vector<VectorXf> ground_truth;
 
   //Call the EKF-based fusion
   size_t N = measurement_pack_list.size();

@@ -1,12 +1,10 @@
 #include "FusionEKF.h"
-#include "tools.h"
-#include "Eigen/Dense"
 #include <iostream>
 
 
 using namespace std;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 using std::vector;
 
 /*
@@ -20,14 +18,14 @@ FusionEKF::FusionEKF() {
   noise_ay = 9;
 
   // initializing kalman matrices
-  ekf_.R_laser_ = MatrixXd(2, 2);
-  ekf_.R_radar_ = MatrixXd(3, 3);
-  ekf_.H_laser_ = MatrixXd(2, 4);
-  ekf_.Q_ = MatrixXd(4, 4);
-  ekf_.F_ = MatrixXd(4, 4);
-  ekf_.P_ = MatrixXd(4, 4);
-  ekf_.x_ = VectorXd(4);
-  ekf_.I_ = MatrixXd::Identity(4, 4);
+  ekf_.R_laser_ = MatrixXf(2, 2);
+  ekf_.R_radar_ = MatrixXf(3, 3);
+  ekf_.H_laser_ = MatrixXf(2, 4);
+  ekf_.Q_ = MatrixXf(4, 4);
+  ekf_.F_ = MatrixXf(4, 4);
+  ekf_.P_ = MatrixXf(4, 4);
+  ekf_.x_ = VectorXf(4);
+  ekf_.I_ = MatrixXf::Identity(4, 4);
 
   /******************************
   /Setup static kalman matrices
@@ -110,7 +108,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Prediction
    ****************************************************************************/
   //compute the time elapsed between the current and previous measurements
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;  //dt - expressed in seconds
+  float dt = ((measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0f);  //dt - expressed in seconds
   previous_timestamp_ = measurement_pack.timestamp_;
 
   //1. Modify the F matrix so that the time component is integrated
@@ -121,8 +119,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   float t2 = dt * dt;
   float t3 = t2 * dt;
   float t4 = t3 * dt;
-  float t4_4 = t4 / 4.0;
-  float t3_2 = t3 / 2.0;
+  float t4_4 = (t4 / 4.0f);
+  float t3_2 = (t3 / 2.0f);
 
   ekf_.Q_ <<  t4_4 * noise_ax, 0, t3_2 * noise_ax, 0,
               0, t4_4 * noise_ay, 0, t3_2 * noise_ay,
